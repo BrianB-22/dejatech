@@ -210,6 +210,47 @@
 
     footer a { color: var(--green); text-decoration: none; }
 
+    /* ── CONTACT ── */
+    .contact {
+      text-align: center;
+      padding: 4rem 2rem;
+      border-top: 1px solid var(--mid);
+      background: var(--charcoal);
+    }
+
+    .contact h2 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--dark);
+      border: 1px solid rgba(125,192,51,0.4);
+      border-radius: 8px;
+      padding: 0.85rem 1.75rem;
+      color: var(--green);
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .contact-email:hover {
+      background: rgba(125,192,51,0.08);
+      border-color: var(--green);
+    }
+
     @media (max-width: 480px) {
       nav { padding: 1rem 1.25rem; }
       .hero { padding: 7rem 1.25rem 4rem; }
@@ -259,6 +300,15 @@
       </div>
     </div>
   </section>
+
+  <div class="contact">
+    <h2>Get in Touch</h2>
+    <div class="divider" style="margin: 0.5rem auto 1rem;"></div>
+    <p>Ready to find the right solution? Reach out to our team.</p>
+    <a class="contact-email" href="mailto:sales@dejatechsolutions.com">
+      ✉ sales@dejatechsolutions.com
+    </a>
+  </div>
 
   <footer>
     &copy; <script>document.write(new Date().getFullYear())</script> DejaTech Solutions, LLC &mdash; All rights reserved.
