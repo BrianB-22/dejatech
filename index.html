@@ -161,10 +161,13 @@
 
     /* ── CARDS ── */
     .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 1.25rem;
     }
+
+    .card { width: clamp(220px, 28%, 280px); }
 
     .card {
       background: var(--charcoal);
