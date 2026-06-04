@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DejaTech Solutions, LLC</title>
+  <title>Brian Bernacki — Senior Technology Leader & Software Builder</title>
+  <meta name="description" content="Brian Bernacki — Senior Technology Leader with 30 years turning complex infrastructure and software challenges into clean, working solutions." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,19 +12,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #050a12;
-      --bg2:       #080f1a;
-      --panel:     #0c1524;
-      --border:    rgba(0, 200, 255, 0.12);
-      --border-hi: rgba(0, 200, 255, 0.45);
-      --cyan:      #00c8ff;
-      --cyan-dim:  rgba(0, 200, 255, 0.15);
-      --purple:    #8b5cf6;
-      --purple-dim:rgba(139, 92, 246, 0.15);
-      --blue:      #3b82f6;
-      --light:     #e8f0fe;
-      --muted:     #7a8fa8;
-      --faint:     rgba(232, 240, 254, 0.06);
+      --bg:         #050a12;
+      --bg2:        #080f1a;
+      --panel:      #0c1524;
+      --panel2:     #0a1220;
+      --border:     rgba(0, 200, 255, 0.10);
+      --border-hi:  rgba(0, 200, 255, 0.42);
+      --cyan:       #00c8ff;
+      --cyan-dim:   rgba(0, 200, 255, 0.12);
+      --purple:     #8b5cf6;
+      --purple-dim: rgba(139, 92, 246, 0.12);
+      --blue:       #3b82f6;
+      --light:      #e8f0fe;
+      --muted:      #7a8fa8;
+      --faint:      rgba(232, 240, 254, 0.06);
     }
 
     html { scroll-behavior: smooth; }
@@ -33,22 +35,58 @@
       background: var(--bg);
       color: var(--light);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow-x: hidden;
     }
 
-    /* ── GLOBAL GRID OVERLAY ── */
+    /* ── GLOBAL DOT-GRID OVERLAY ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0, 200, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 200, 255, 0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(rgba(0, 200, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 200, 255, 0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* ── FLOATING PARTICLE CANVAS (hero bg, CSS-only) ── */
+    @keyframes floatA {
+      0%   { transform: translate(0, 0)   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.7; }
+      100% { transform: translate(-60px, -180px) opacity: 0; }
+    }
+    @keyframes floatB {
+      0%   { transform: translate(0, 0);   opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translate(80px, -200px); opacity: 0; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1; }
+    }
+    @keyframes driftRight {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(8px); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes orbPulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+      50%       { transform: translate(-50%, -50%) scale(1.12); opacity: 0.9; }
+    }
+    @keyframes timelineDot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,200,255,0.4); }
+      50%       { box-shadow: 0 0 0 6px rgba(0,200,255,0); }
     }
 
     /* ── NAV ── */
@@ -60,22 +98,23 @@
       align-items: center;
       justify-content: space-between;
       padding: 1rem 2.5rem;
-      background: rgba(5, 10, 18, 0.88);
-      backdrop-filter: blur(16px);
+      background: rgba(5, 10, 18, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
     }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+    .nav-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      color: var(--light);
       text-decoration: none;
+      transition: color 0.2s;
     }
-
-    .nav-logo img {
-      height: 44px;
-      filter: brightness(1.1);
-    }
+    .nav-brand span { color: var(--cyan); }
+    .nav-brand:hover { color: var(--cyan); }
 
     nav ul {
       list-style: none;
@@ -88,7 +127,7 @@
       color: var(--muted);
       text-decoration: none;
       font-size: 0.82rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 500;
@@ -101,120 +140,138 @@
       border: 1px solid var(--border-hi);
       border-radius: 6px;
       padding: 0.45rem 1.1rem;
-      transition: background 0.2s, color 0.2s !important;
     }
     .nav-cta:hover {
-      background: var(--cyan-dim);
+      background: var(--cyan-dim) !important;
       color: #fff !important;
     }
 
     /* ── HERO ── */
     .hero {
-      flex: 1;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 10rem 2rem 7rem;
-      position: relative;
+      min-height: 100vh;
+      padding: 9rem 2rem 6rem;
       overflow: hidden;
       z-index: 1;
     }
 
-    /* radial glow */
-    .hero::after {
-      content: '';
+    /* animated radial orb */
+    .hero-orb {
       position: absolute;
-      top: 40%;
+      top: 45%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 800px;
+      width: 760px;
+      height: 760px;
+      border-radius: 50%;
       background:
-        radial-gradient(ellipse at center, rgba(0,200,255,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 30% 60%, rgba(139,92,246,0.06) 0%, transparent 55%);
+        radial-gradient(ellipse at center, rgba(0,200,255,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse at 35% 55%, rgba(139,92,246,0.05) 0%, transparent 60%);
+      animation: orbPulse 6s ease-in-out infinite;
       pointer-events: none;
     }
 
-    /* corner circuit accent lines */
-    .hero-circuit {
+    /* floating particle dots (CSS only) */
+    .particle {
       position: absolute;
-      top: 12%;
-      right: 8%;
-      width: 180px;
-      height: 180px;
+      border-radius: 50%;
       pointer-events: none;
-      opacity: 0.18;
+      animation: floatB linear infinite;
     }
+    .p1  { width:3px; height:3px; background:var(--cyan);   opacity:.5; bottom:18%; left:15%; animation-duration:9s;  animation-delay:0s; }
+    .p2  { width:2px; height:2px; background:var(--purple); opacity:.4; bottom:28%; left:72%; animation-duration:11s; animation-delay:2s; }
+    .p3  { width:3px; height:3px; background:var(--cyan);   opacity:.35; bottom:50%; left:8%;  animation-duration:13s; animation-delay:4s; }
+    .p4  { width:2px; height:2px; background:var(--cyan);   opacity:.5; bottom:12%; left:55%; animation-duration:8s;  animation-delay:1s; }
+    .p5  { width:2px; height:2px; background:var(--purple); opacity:.45; bottom:60%; left:82%; animation-duration:10s; animation-delay:3s; }
+    .p6  { width:3px; height:3px; background:var(--cyan);   opacity:.3; bottom:75%; left:22%; animation-duration:14s; animation-delay:5s; }
+    .p7  { width:2px; height:2px; background:var(--cyan);   opacity:.4; bottom:35%; left:90%; animation-duration:12s; animation-delay:0.5s; }
+    .p8  { width:2px; height:2px; background:var(--purple); opacity:.5; bottom:80%; left:45%; animation-duration:7s;  animation-delay:2.5s; }
+    .p9  { width:3px; height:3px; background:var(--cyan);   opacity:.3; bottom:5%;  left:38%; animation-duration:15s; animation-delay:6s; }
+    .p10 { width:2px; height:2px; background:var(--purple); opacity:.35; bottom:65%; left:60%; animation-duration:9s;  animation-delay:1.5s; }
 
-    .hero-circuit-left {
+    /* circuit SVG accents */
+    .hero-circuit-r {
       position: absolute;
-      bottom: 14%;
-      left: 6%;
-      width: 140px;
-      height: 140px;
+      top: 10%; right: 6%;
+      width: 170px; height: 170px;
+      opacity: 0.16;
       pointer-events: none;
-      opacity: 0.14;
-      transform: scaleX(-1) rotate(20deg);
     }
-
-    .hero-logo {
-      width: clamp(240px, 38vw, 440px);
-      margin-bottom: 2.5rem;
-      position: relative;
-      z-index: 1;
-      filter: drop-shadow(0 0 32px rgba(0, 200, 255, 0.35)) brightness(1.05);
+    .hero-circuit-l {
+      position: absolute;
+      bottom: 12%; left: 5%;
+      width: 140px; height: 140px;
+      opacity: 0.13;
+      pointer-events: none;
+      transform: scaleX(-1) rotate(15deg);
     }
 
     .hero-eyebrow {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.72rem;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--cyan);
-      margin-bottom: 1.2rem;
-      position: relative;
-      z-index: 1;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.8rem;
+      margin-bottom: 1.4rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s ease both;
     }
-
     .hero-eyebrow::before,
     .hero-eyebrow::after {
       content: '';
       display: inline-block;
-      width: 40px;
-      height: 1px;
+      width: 36px; height: 1px;
       background: var(--cyan);
       opacity: 0.5;
     }
 
-    .tagline {
+    .hero-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
       font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      max-width: 680px;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1.1rem;
       position: relative;
       z-index: 1;
-      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #ffffff 30%, var(--cyan) 70%, var(--purple) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.7s 0.1s ease both, shimmer 6s linear 1s infinite;
     }
 
-    .tagline .accent { color: var(--cyan); }
-    .tagline .accent-purple { color: var(--purple); }
-
-    .sub-tagline {
-      font-size: 1.05rem;
-      color: var(--muted);
-      font-weight: 300;
-      line-height: 1.7;
-      max-width: 520px;
+    .hero-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      font-weight: 500;
+      color: var(--cyan);
+      letter-spacing: 0.01em;
+      margin-bottom: 1.1rem;
       position: relative;
       z-index: 1;
-      margin-bottom: 2.5rem;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-oneliner {
+      font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.75;
+      max-width: 560px;
+      margin-bottom: 2.75rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s 0.3s ease both;
     }
 
     .hero-actions {
@@ -224,8 +281,39 @@
       justify-content: center;
       position: relative;
       z-index: 1;
+      animation: fadeUp 0.7s 0.4s ease both;
     }
 
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      z-index: 1;
+      opacity: 0.4;
+      animation: fadeUp 1s 1s ease both;
+    }
+    .scroll-hint span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--muted);
+    }
+    .scroll-arrow {
+      width: 20px; height: 20px;
+      border-right: 1.5px solid var(--muted);
+      border-bottom: 1.5px solid var(--muted);
+      transform: rotate(45deg);
+      animation: driftRight 1s ease-in-out infinite alternate;
+    }
+
+    /* ── BUTTONS ── */
     .btn-primary {
       display: inline-flex;
       align-items: center;
@@ -234,19 +322,20 @@
       color: var(--bg);
       border: none;
       border-radius: 8px;
-      padding: 0.85rem 2rem;
+      padding: 0.9rem 2.1rem;
       font-size: 0.92rem;
       font-weight: 700;
       font-family: 'Space Grotesk', sans-serif;
       letter-spacing: 0.02em;
       text-decoration: none;
       cursor: pointer;
-      transition: opacity 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 24px rgba(0, 200, 255, 0.3);
+      transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 0 24px rgba(0, 200, 255, 0.28);
     }
     .btn-primary:hover {
       opacity: 0.9;
       box-shadow: 0 0 36px rgba(0, 200, 255, 0.5);
+      transform: translateY(-1px);
     }
 
     .btn-ghost {
@@ -257,24 +346,25 @@
       color: var(--light);
       border: 1px solid var(--border-hi);
       border-radius: 8px;
-      padding: 0.85rem 2rem;
+      padding: 0.9rem 2.1rem;
       font-size: 0.92rem;
       font-weight: 500;
       font-family: 'Space Grotesk', sans-serif;
       letter-spacing: 0.02em;
       text-decoration: none;
       cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
     }
     .btn-ghost:hover {
       background: var(--cyan-dim);
       border-color: var(--cyan);
+      transform: translateY(-1px);
     }
 
     /* ── SECTION BASE ── */
     .section {
-      padding: 5rem 2rem;
-      max-width: 1000px;
+      padding: 6rem 2rem;
+      max-width: 1040px;
       margin: 0 auto;
       width: 100%;
       position: relative;
@@ -283,23 +373,24 @@
 
     .section-header {
       text-align: center;
-      margin-bottom: 3.5rem;
+      margin-bottom: 4rem;
     }
 
     .section-eyebrow {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.7rem;
-      letter-spacing: 0.25em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--cyan);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
+      display: block;
     }
 
     .section-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.025em;
       margin-bottom: 0.75rem;
     }
 
@@ -307,136 +398,77 @@
       color: var(--muted);
       font-size: 1rem;
       line-height: 1.8;
-      max-width: 560px;
+      max-width: 540px;
       margin: 0 auto;
     }
 
-    .divider-line {
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(to bottom, var(--cyan), transparent);
-      margin: 0 auto 2rem;
-      opacity: 0.6;
-    }
-
-    /* ── SERVICES CARDS ── */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
+    /* ── SECTION SEPARATORS ── */
+    .sep {
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .card:hover {
-      border-color: var(--border-hi);
-      transform: translateY(-5px);
-    }
-
-    .card:hover::before { opacity: 1; }
-
-    .card-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .card h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.6rem;
-      color: var(--light);
-    }
-
-    .card p {
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── PRODUCTS / QUICKKEY ── */
-    .products-section {
-      padding: 5rem 2rem;
+      background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+      max-width: 1040px;
+      margin: 0 auto;
       position: relative;
       z-index: 1;
-      background: linear-gradient(180deg, transparent 0%, rgba(8,15,26,0.8) 100%);
     }
 
-    .products-inner {
-      max-width: 1000px;
-      margin: 0 auto;
+    /* ── PROJECTS ── */
+    #projects {
+      background: linear-gradient(180deg, transparent 0%, rgba(8,15,26,0.6) 50%, transparent 100%);
     }
 
-    .product-card {
+    .project-card {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 20px;
       overflow: hidden;
       position: relative;
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      margin-bottom: 1.5rem;
+    }
+    .project-card:hover {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 48px rgba(0,200,255,0.07);
     }
 
-    .product-card:hover { border-color: var(--border-hi); }
-
-    /* glowing top edge on product card */
-    .product-card::before {
+    /* glowing top edge */
+    .project-card::before {
       content: '';
       position: absolute;
       top: 0; left: 10%; right: 10%;
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), var(--purple), transparent);
-      opacity: 0.8;
+      opacity: 0.75;
     }
 
-    .product-content {
+    .project-content {
       padding: 3rem 2.5rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .product-label {
+    .project-label {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.68rem;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--purple);
-      border: 1px solid rgba(139, 92, 246, 0.3);
+      border: 1px solid rgba(139, 92, 246, 0.28);
       border-radius: 999px;
       padding: 0.3rem 0.9rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.4rem;
       width: fit-content;
     }
 
-    .product-name {
+    .project-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       margin-bottom: 1rem;
@@ -446,47 +478,39 @@
       background-clip: text;
     }
 
-    .product-desc {
+    .project-desc {
       color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.75;
+      font-size: 0.98rem;
+      line-height: 1.78;
+      margin-bottom: 1.75rem;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       margin-bottom: 2rem;
     }
 
-    .product-features {
-      list-style: none;
-      margin-bottom: 2.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
+    .tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,200,255,0.2);
+      border-radius: 5px;
+      padding: 0.25rem 0.7rem;
     }
 
-    .product-features li {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.9rem;
-      color: var(--light);
-    }
-
-    .product-features li::before {
-      content: '';
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      flex-shrink: 0;
-      box-shadow: 0 0 8px var(--cyan);
-    }
-
-    .product-actions {
+    .project-actions {
       display: flex;
       gap: 0.75rem;
       flex-wrap: wrap;
     }
 
-    .btn-product {
+    .btn-project {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -499,16 +523,16 @@
       font-weight: 700;
       font-family: 'Space Grotesk', sans-serif;
       text-decoration: none;
-      cursor: pointer;
-      transition: opacity 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 20px rgba(0, 200, 255, 0.25);
+      transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+      box-shadow: 0 0 20px rgba(0,200,255,0.22);
     }
-    .btn-product:hover {
+    .btn-project:hover {
       opacity: 0.9;
-      box-shadow: 0 0 32px rgba(0, 200, 255, 0.4);
+      box-shadow: 0 0 32px rgba(0,200,255,0.4);
+      transform: translateY(-1px);
     }
 
-    .btn-product-ghost {
+    .btn-project-ghost {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -521,197 +545,409 @@
       font-weight: 500;
       font-family: 'Space Grotesk', sans-serif;
       text-decoration: none;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
     }
-    .btn-product-ghost:hover {
+    .btn-project-ghost:hover {
       border-color: var(--border-hi);
       color: var(--light);
+      transform: translateY(-1px);
     }
 
-    .product-visual {
-      background: linear-gradient(135deg, rgba(0,200,255,0.04) 0%, rgba(139,92,246,0.08) 100%);
+    /* ── QUICKKEY MOCKUP ── */
+    .project-visual {
+      background: linear-gradient(135deg, rgba(0,200,255,0.03) 0%, rgba(139,92,246,0.07) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2.5rem;
       position: relative;
       overflow: hidden;
-      min-height: 320px;
+      min-height: 340px;
     }
-
-    /* decorative circuit dots behind the product visual */
-    .product-visual::before {
+    .project-visual::before {
       content: '';
       position: absolute;
       inset: 0;
       background-image:
-        radial-gradient(rgba(0,200,255,0.18) 1px, transparent 1px),
-        radial-gradient(rgba(139,92,246,0.1) 1px, transparent 1px);
-      background-size: 24px 24px, 48px 48px;
-      background-position: 0 0, 12px 12px;
+        radial-gradient(rgba(0,200,255,0.15) 1px, transparent 1px),
+        radial-gradient(rgba(139,92,246,0.08) 1px, transparent 1px);
+      background-size: 22px 22px, 44px 44px;
+      background-position: 0 0, 11px 11px;
       pointer-events: none;
     }
 
-    .product-mockup {
+    .mockup {
       position: relative;
       z-index: 1;
-      background: rgba(5, 10, 18, 0.9);
-      border: 1px solid rgba(0,200,255,0.3);
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
+      background: rgba(5, 10, 18, 0.92);
+      border: 1px solid rgba(0,200,255,0.28);
+      border-radius: 13px;
+      padding: 1.1rem 1.4rem;
       width: 100%;
-      max-width: 300px;
+      max-width: 290px;
       box-shadow:
-        0 0 0 1px rgba(0,200,255,0.1),
-        0 0 40px rgba(0,200,255,0.12),
-        0 20px 60px rgba(0,0,0,0.5);
+        0 0 0 1px rgba(0,200,255,0.08),
+        0 0 42px rgba(0,200,255,0.1),
+        0 24px 64px rgba(0,0,0,0.55);
     }
-
     .mockup-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
+      gap: 0.45rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.7rem;
       border-bottom: 1px solid var(--border);
     }
-
-    .mockup-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .mockup-dot-r { background: #ff5f57; }
-    .mockup-dot-y { background: #febc2e; }
-    .mockup-dot-g { background: #28c840; }
-
-    .mockup-title {
+    .dot { width:8px; height:8px; border-radius:50%; }
+    .dot-r { background:#ff5f57; }
+    .dot-y { background:#febc2e; }
+    .dot-g { background:#28c840; }
+    .mockup-label {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--muted);
       margin-left: auto;
     }
-
+    .mockup-search {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+    .search-icon { color: var(--muted); font-size: 0.75rem; }
+    .search-text { font-size: 0.72rem; color: var(--muted); font-family: 'Space Grotesk', sans-serif; }
     .mockup-app-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      font-size: 0.8rem;
+      gap: 0.6rem;
+      font-size: 0.78rem;
       color: var(--cyan);
       font-weight: 600;
       font-family: 'Space Grotesk', sans-serif;
-      margin-bottom: 0.9rem;
-      padding-bottom: 0.9rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.8rem;
       border-bottom: 1px solid var(--border);
     }
-
-    .mockup-app-icon {
-      width: 22px;
-      height: 22px;
+    .app-icon {
+      width: 20px; height: 20px;
       background: var(--cyan-dim);
       border-radius: 5px;
-      border: 1px solid rgba(0,200,255,0.3);
+      border: 1px solid rgba(0,200,255,0.28);
+      flex-shrink: 0;
     }
-
-    .mockup-shortcut {
+    .shortcut-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.45rem 0;
-      font-size: 0.75rem;
+      padding: 0.42rem 0;
+      font-size: 0.72rem;
+      border-bottom: 1px solid rgba(0,200,255,0.05);
     }
-
-    .shortcut-name { color: var(--muted); }
-
-    .shortcut-keys {
-      display: flex;
-      gap: 0.25rem;
-    }
-
+    .shortcut-row:last-of-type { border-bottom: none; }
+    .sc-name { color: var(--muted); }
+    .sc-keys { display: flex; gap: 0.22rem; }
     .key {
       background: var(--faint);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 0.15rem 0.45rem;
-      font-size: 0.68rem;
+      padding: 0.12rem 0.42rem;
+      font-size: 0.65rem;
       color: var(--light);
       font-family: 'Space Grotesk', monospace;
     }
-
-    .mockup-platform-badge {
-      margin-top: 1rem;
-      padding-top: 0.75rem;
+    .mockup-footer {
+      margin-top: 0.85rem;
+      padding-top: 0.7rem;
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.7rem;
+      font-size: 0.67rem;
       color: var(--muted);
     }
-
-    .platform-dot {
-      width: 6px;
-      height: 6px;
+    .status-dot {
+      width: 6px; height: 6px;
       border-radius: 50%;
+      background: var(--purple);
+      box-shadow: 0 0 6px var(--purple);
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+
+    /* ── COMING SOON CARD ── */
+    .coming-soon {
+      background: var(--panel2);
+      border: 1px dashed rgba(0,200,255,0.18);
+      border-radius: 16px;
+      padding: 2.75rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .coming-soon::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .coming-soon-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 0.75rem;
+    }
+    .coming-soon h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── EXPERIENCE / TIMELINE ── */
+    #experience {
+      position: relative;
+    }
+
+    .timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* vertical line */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--cyan), rgba(139,92,246,0.5), transparent);
+      margin-left: 11px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 0 1.75rem;
+      padding-bottom: 3rem;
+      position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--cyan);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      margin-top: 2px;
+      animation: timelineDot 3s ease-in-out infinite;
+    }
+    .timeline-item:nth-child(2) .timeline-dot { border-color: var(--purple); animation-delay: 0.5s; }
+    .timeline-item:nth-child(3) .timeline-dot { border-color: var(--cyan); animation-delay: 1s; }
+    .timeline-item:nth-child(4) .timeline-dot { border-color: var(--purple); animation-delay: 1.5s; }
+    .timeline-item:nth-child(5) .timeline-dot { border-color: var(--cyan); animation-delay: 2s; }
+
+    .timeline-inner {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 2rem;
+      transition: border-color 0.3s;
+    }
+    .timeline-item:hover .timeline-inner {
+      border-color: var(--border-hi);
+    }
+
+    .tl-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .tl-role {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--light);
+      letter-spacing: -0.01em;
+    }
+
+    .tl-date {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,200,255,0.18);
+      border-radius: 999px;
+      padding: 0.22rem 0.8rem;
+      white-space: nowrap;
+    }
+
+    .tl-company {
+      font-size: 0.9rem;
+      color: var(--purple);
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+    }
+
+    .tl-location {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .tl-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tl-highlights li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tl-highlights li::before {
+      content: '';
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--cyan);
+      flex-shrink: 0;
+      margin-top: 0.5em;
+      box-shadow: 0 0 6px var(--cyan);
+    }
+    .timeline-item:nth-child(even) .tl-highlights li::before {
       background: var(--purple);
       box-shadow: 0 0 6px var(--purple);
     }
 
     /* ── CONTACT ── */
-    .contact {
+    #contact {
       text-align: center;
-      padding: 5rem 2rem;
+      padding: 6rem 2rem;
       position: relative;
       z-index: 1;
       border-top: 1px solid var(--border);
     }
 
-    .contact::before {
+    #contact::before {
       content: '';
       position: absolute;
       top: 0; left: 50%;
       transform: translateX(-50%);
-      width: 400px;
-      height: 1px;
+      width: 500px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--cyan), transparent);
     }
 
-    .contact h2 {
+    .contact-glow {
+      position: absolute;
+      top: 30%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(0,200,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.85rem;
+      position: relative;
     }
 
-    .contact p {
+    .contact-sub {
       color: var(--muted);
-      margin-bottom: 2rem;
       font-size: 1rem;
+      line-height: 1.75;
+      max-width: 500px;
+      margin: 0 auto 2.25rem;
+      position: relative;
     }
 
-    .contact-email {
+    .contact-email-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.65rem;
       background: var(--panel);
       border: 1px solid var(--border-hi);
       border-radius: 10px;
-      padding: 0.9rem 2rem;
+      padding: 1rem 2.25rem;
       color: var(--cyan);
       text-decoration: none;
       font-size: 1rem;
       font-weight: 500;
       font-family: 'Space Grotesk', sans-serif;
       letter-spacing: 0.01em;
-      transition: background 0.2s, box-shadow 0.2s;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .contact-email-btn:hover {
+      background: var(--cyan-dim);
+      box-shadow: 0 0 28px rgba(0,200,255,0.22);
+      transform: translateY(-1px);
     }
 
-    .contact-email:hover {
+    .social-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+    .social-link:hover {
+      color: var(--cyan);
+      border-color: var(--border-hi);
       background: var(--cyan-dim);
-      box-shadow: 0 0 24px rgba(0, 200, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .social-link svg {
+      width: 17px; height: 17px;
+      fill: currentColor;
+      flex-shrink: 0;
     }
 
     /* ── FOOTER ── */
@@ -723,26 +959,51 @@
       border-top: 1px solid var(--border);
       position: relative;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1040px;
+      margin: 0 auto;
     }
-
     footer a {
       color: var(--cyan);
       text-decoration: none;
+      transition: opacity 0.2s;
     }
-    footer a:hover { text-decoration: underline; }
+    footer a:hover { opacity: 0.7; }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .footer-sep { color: var(--border-hi); }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      .project-card { grid-template-columns: 1fr; }
+      .project-visual { min-height: 260px; order: -1; }
+      .project-content { padding: 2rem 1.5rem; }
+    }
+
     @media (max-width: 700px) {
-      nav { padding: 1rem 1.25rem; }
+      nav { padding: 0.9rem 1.25rem; }
       nav ul { gap: 1rem; }
-      .hero { padding: 8rem 1.25rem 5rem; }
-      .product-card { grid-template-columns: 1fr; }
-      .product-visual { min-height: 260px; order: -1; }
-      .product-content { padding: 2rem 1.5rem; }
+      .hero { padding: 7rem 1.25rem 5rem; }
+      .section { padding: 4rem 1.25rem; }
+      #contact { padding: 4rem 1.25rem; }
+      .timeline::before { left: 8px; }
+      .timeline-item { grid-template-columns: 20px 1fr; gap: 0 1.25rem; }
+      .timeline-dot { width: 20px; height: 20px; }
+      .timeline-inner { padding: 1.25rem 1.25rem; }
+      footer { flex-direction: column; align-items: center; }
     }
 
     @media (max-width: 480px) {
       nav ul .hide-sm { display: none; }
+      .hero-name { font-size: 2.4rem; }
+      .tl-header { flex-direction: column; }
     }
   </style>
 </head>
@@ -750,179 +1011,296 @@
 
   <!-- ── NAV ── -->
   <nav>
-    <a class="nav-logo" href="#">
-      <img src="logo2.png" alt="DejaTech Solutions, LLC" />
-    </a>
+    <a class="nav-brand" href="#">Brian <span>Bernacki</span></a>
     <ul>
-      <li class="hide-sm"><a href="#services">Services</a></li>
-      <li class="hide-sm"><a href="#products">Products</a></li>
-      <li><a class="nav-cta" href="mailto:sales@dejatechsolutions.com">Contact</a></li>
+      <li class="hide-sm"><a href="#projects">Projects</a></li>
+      <li class="hide-sm"><a href="#experience">Experience</a></li>
+      <li><a class="nav-cta" href="#contact">Contact</a></li>
     </ul>
   </nav>
 
   <!-- ── HERO ── -->
   <section class="hero">
-    <!-- Decorative SVG circuit accents -->
-    <svg class="hero-circuit" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 90 H60 V40 H130 V10" stroke="#00c8ff" stroke-width="1.5"/>
-      <path d="M60 90 V140 H110 V170" stroke="#8b5cf6" stroke-width="1"/>
-      <circle cx="60" cy="90" r="4" fill="#00c8ff" opacity="0.7"/>
-      <circle cx="130" cy="40" r="3" fill="#00c8ff" opacity="0.5"/>
-      <circle cx="110" cy="140" r="3" fill="#8b5cf6" opacity="0.5"/>
-      <rect x="126" y="6" width="8" height="8" rx="1" stroke="#00c8ff" stroke-width="1" opacity="0.6"/>
+    <!-- ambient orb -->
+    <div class="hero-orb"></div>
+
+    <!-- floating particles (CSS-only) -->
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+    <div class="particle p6"></div>
+    <div class="particle p7"></div>
+    <div class="particle p8"></div>
+    <div class="particle p9"></div>
+    <div class="particle p10"></div>
+
+    <!-- decorative circuit SVGs -->
+    <svg class="hero-circuit-r" viewBox="0 0 170 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 85 H55 V35 H125 V8" stroke="#00c8ff" stroke-width="1.5"/>
+      <path d="M55 85 V135 H105 V162" stroke="#8b5cf6" stroke-width="1"/>
+      <circle cx="55" cy="85" r="4" fill="#00c8ff" opacity="0.65"/>
+      <circle cx="125" cy="35" r="3" fill="#00c8ff" opacity="0.45"/>
+      <circle cx="105" cy="135" r="3" fill="#8b5cf6" opacity="0.45"/>
+      <rect x="120" y="4" width="9" height="9" rx="1.5" stroke="#00c8ff" stroke-width="1" opacity="0.55"/>
     </svg>
-    <svg class="hero-circuit-left" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="hero-circuit-l" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10 70 H50 V30 H100 V10" stroke="#8b5cf6" stroke-width="1.5"/>
       <path d="M50 70 V110 H90 V130" stroke="#00c8ff" stroke-width="1"/>
-      <circle cx="50" cy="70" r="4" fill="#8b5cf6" opacity="0.7"/>
-      <circle cx="100" cy="30" r="3" fill="#8b5cf6" opacity="0.5"/>
-      <circle cx="90" cy="110" r="3" fill="#00c8ff" opacity="0.5"/>
+      <circle cx="50" cy="70" r="4" fill="#8b5cf6" opacity="0.65"/>
+      <circle cx="100" cy="30" r="3" fill="#8b5cf6" opacity="0.45"/>
+      <circle cx="90" cy="110" r="3" fill="#00c8ff" opacity="0.45"/>
     </svg>
 
-    <img class="hero-logo" src="logo2.png" alt="DejaTech Solutions, LLC" />
-    <div class="hero-eyebrow">Indie Software &amp; Technology</div>
-    <h1 class="tagline">
-      Built for the<br/>
-      <span class="accent">future</span> of
-      <span class="accent-purple"> software</span>
-    </h1>
-    <p class="sub-tagline">
-      DejaTech Solutions delivers custom software, intelligent tools, and technology consulting for businesses that refuse to settle for ordinary.
-    </p>
+    <div class="hero-eyebrow">Senior Technology Leader &amp; Software Builder</div>
+    <h1 class="hero-name">Brian Bernacki</h1>
+    <p class="hero-subtitle">30 years turning complex infrastructure and software challenges<br>into clean, working solutions.</p>
+    <p class="hero-oneliner">From enterprise cloud architecture to indie macOS apps — I build things that work, lead teams that ship, and solve problems that matter.</p>
     <div class="hero-actions">
-      <a class="btn-primary" href="#products">Explore Products</a>
-      <a class="btn-ghost" href="#services">Our Services</a>
+      <a class="btn-primary" href="#projects">See My Work</a>
+      <a class="btn-ghost" href="#contact">Get In Touch</a>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
     </div>
   </section>
 
-  <!-- ── SERVICES ── -->
-  <section class="section" id="services">
+  <!-- ── PROJECTS ── -->
+  <div class="sep"></div>
+  <section class="section" id="projects">
     <div class="section-header">
-      <p class="section-eyebrow">What We Do</p>
-      <h2 class="section-title">Technology that moves business forward</h2>
-      <p class="section-sub">We deliver tailored solutions that help businesses run smarter, faster, and more reliably.</p>
+      <span class="section-eyebrow">What I Build</span>
+      <h2 class="section-title">Projects</h2>
+      <p class="section-sub">Beyond enterprise work, I build tools I'd want to use myself — and ship them.</p>
     </div>
-    <div class="cards">
-      <div class="card">
-        <span class="card-icon">🖥️</span>
-        <h3>IT Consulting</h3>
-        <p>Strategic guidance to align your technology investments with your business objectives.</p>
+
+    <!-- QuickKey featured card -->
+    <div class="project-card">
+      <div class="project-content">
+        <span class="project-label">&#9679;&nbsp; macOS App &mdash; Free</span>
+        <h3 class="project-name">QuickKey</h3>
+        <p class="project-desc">
+          A macOS menu bar app that surfaces keyboard shortcuts for whatever app you're using. Search, browse, favorite, and trigger shortcuts without leaving the keyboard.
+        </p>
+        <div class="project-tags">
+          <span class="tag">macOS</span>
+          <span class="tag">Swift</span>
+          <span class="tag">SwiftUI</span>
+        </div>
+        <div class="project-actions">
+          <a class="btn-project" href="https://github.com/BrianB-22/QuickKey/releases/latest" target="_blank" rel="noopener noreferrer">
+            Download v2.0 &rarr;
+          </a>
+          <a class="btn-project-ghost" href="https://github.com/BrianB-22/QuickKey" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </div>
       </div>
-      <div class="card">
-        <span class="card-icon">💻</span>
-        <h3>Software Development</h3>
-        <p>Custom software engineered from scratch to solve your unique challenges at scale.</p>
+
+      <div class="project-visual">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="mockup-label">QuickKey</span>
+          </div>
+          <div class="mockup-search">
+            <span class="search-icon">&#9741;</span>
+            <span class="search-text">Search shortcuts&hellip;</span>
+          </div>
+          <div class="mockup-app-row">
+            <div class="app-icon"></div>
+            <span>Xcode &mdash; Active App</span>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Build &amp; Run</span>
+            <div class="sc-keys">
+              <span class="key">&#8984;</span><span class="key">R</span>
+            </div>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Find in project</span>
+            <div class="sc-keys">
+              <span class="key">&#8984;</span><span class="key">&#8679;</span><span class="key">F</span>
+            </div>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Open quickly</span>
+            <div class="sc-keys">
+              <span class="key">&#8984;</span><span class="key">&#8679;</span><span class="key">O</span>
+            </div>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Toggle breakpoint</span>
+            <div class="sc-keys">
+              <span class="key">&#8984;</span><span class="key">\</span>
+            </div>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Clean build folder</span>
+            <div class="sc-keys">
+              <span class="key">&#8984;</span><span class="key">&#8679;</span><span class="key">K</span>
+            </div>
+          </div>
+          <div class="mockup-footer">
+            <div class="status-dot"></div>
+            macOS &mdash; Free Download
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <span class="card-icon">🤖</span>
-        <h3>AI Solutions</h3>
-        <p>Harness modern AI to automate workflows, surface insights, and drive innovation.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon">☁️</span>
-        <h3>Cloud Infrastructure</h3>
-        <p>Resilient, scalable cloud architecture built for performance and long-term growth.</p>
-      </div>
+    </div>
+
+    <!-- Coming soon placeholder -->
+    <div class="coming-soon">
+      <p class="coming-soon-label">On the workbench</p>
+      <h3>More coming soon&hellip;</h3>
     </div>
   </section>
 
-  <!-- ── PRODUCTS / QUICKKEY ── -->
-  <section class="products-section" id="products">
-    <div class="products-inner">
-      <div class="section-header">
-        <p class="section-eyebrow">Our Products</p>
-        <h2 class="section-title">Software we ship to the world</h2>
-        <p class="section-sub">Beyond client work, we build and release tools we'd want to use ourselves.</p>
-      </div>
+  <!-- ── EXPERIENCE ── -->
+  <div class="sep"></div>
+  <section class="section" id="experience">
+    <div class="section-header">
+      <span class="section-eyebrow">Career</span>
+      <h2 class="section-title">Experience</h2>
+      <p class="section-sub">30 years across enterprise IT leadership, software engineering, and infrastructure at scale.</p>
+    </div>
 
-      <div class="product-card">
-        <div class="product-content">
-          <span class="product-label">&#9679;&nbsp; macOS App &mdash; Free</span>
-          <h3 class="product-name">QuickKey</h3>
-          <p class="product-desc">
-            A lightweight macOS menu bar app that instantly surfaces keyboard shortcuts for whatever app you're currently using — no more hunting through menus or docs.
-          </p>
-          <ul class="product-features">
-            <li>Auto-detects your active application</li>
-            <li>Instant shortcut lookup from the menu bar</li>
-            <li>Clean, non-intrusive native UI</li>
-            <li>Supports hundreds of popular apps</li>
+    <div class="timeline">
+
+      <!-- 1 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-inner">
+          <div class="tl-header">
+            <span class="tl-role">Senior Director of Technical Operations</span>
+            <span class="tl-date">Oct 2018 &ndash; Present</span>
+          </div>
+          <p class="tl-company">Direct ChassisLink Inc. (DCLI)</p>
+          <p class="tl-location">Charlotte, NC &mdash; Hybrid</p>
+          <ul class="tl-highlights">
+            <li>Deployed enterprise LLM chatbot, integrating internal knowledge bases to reduce tier-1 support load</li>
+            <li>Architected AWS WorkSpaces VDI scale-out to 160+ desktops using Terraform for repeatable provisioning</li>
+            <li>Designed hybrid cloud architecture spanning AWS, on-premises, and SaaS platforms supporting 212% user growth</li>
+            <li>Grew and led IT team covering infrastructure, security, and databases across the expanded organization</li>
+            <li>Drove NIST CSF score from 1.6 to 4.9 through Zero Trust implementation, CrowdStrike, and conditional access policies</li>
+            <li>Executed three data center consolidations, reducing footprint and operational overhead</li>
           </ul>
-          <div class="product-actions">
-            <a class="btn-product" href="https://github.com/BrianB-22/QuickKey/releases/latest" target="_blank" rel="noopener">
-              Download Latest &rarr;
-            </a>
-            <a class="btn-product-ghost" href="https://github.com/BrianB-22/QuickKey" target="_blank" rel="noopener">
-              View on GitHub
-            </a>
-          </div>
-        </div>
-
-        <div class="product-visual">
-          <!-- Stylised mockup of the QuickKey panel -->
-          <div class="product-mockup">
-            <div class="mockup-bar">
-              <div class="mockup-dot mockup-dot-r"></div>
-              <div class="mockup-dot mockup-dot-y"></div>
-              <div class="mockup-dot mockup-dot-g"></div>
-              <span class="mockup-title">QuickKey</span>
-            </div>
-            <div class="mockup-app-row">
-              <span>Figma</span>
-              <div class="mockup-app-icon"></div>
-            </div>
-            <div class="mockup-shortcut">
-              <span class="shortcut-name">New frame</span>
-              <div class="shortcut-keys">
-                <span class="key">F</span>
-              </div>
-            </div>
-            <div class="mockup-shortcut">
-              <span class="shortcut-name">Group selection</span>
-              <div class="shortcut-keys">
-                <span class="key">&#8984;</span><span class="key">G</span>
-              </div>
-            </div>
-            <div class="mockup-shortcut">
-              <span class="shortcut-name">Components</span>
-              <div class="shortcut-keys">
-                <span class="key">&#8984;</span><span class="key">&#8997;</span><span class="key">K</span>
-              </div>
-            </div>
-            <div class="mockup-shortcut">
-              <span class="shortcut-name">Zoom to fit</span>
-              <div class="shortcut-keys">
-                <span class="key">&#8679;</span><span class="key">1</span>
-              </div>
-            </div>
-            <div class="mockup-shortcut">
-              <span class="shortcut-name">Vector mode</span>
-              <div class="shortcut-keys">
-                <span class="key">&#8984;</span><span class="key">&#8617;</span>
-              </div>
-            </div>
-            <div class="mockup-platform-badge">
-              <div class="platform-dot"></div>
-              macOS &mdash; Free Download
-            </div>
-          </div>
         </div>
       </div>
+
+      <!-- 2 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-inner">
+          <div class="tl-header">
+            <span class="tl-role">Director of Information Technology</span>
+            <span class="tl-date">May 2007 &ndash; Sep 2018</span>
+          </div>
+          <p class="tl-company">The Vane Brothers Company</p>
+          <p class="tl-location">Baltimore / DC</p>
+          <ul class="tl-highlights">
+            <li>Led full IT function for 100+ remote offices supporting global oil transport operations</li>
+            <li>Executed Office 365 migration and built corporate data warehouse with BI dashboards (Sisense, SSRS, Prophix)</li>
+            <li>Modernized mobile workforce with iPad-based field systems, eliminating paper-based workflows</li>
+            <li>Delivered $1M+ in on-premises and SaaS projects on time and under budget</li>
+            <li>Maintained PCI-DSS, EPA, USCG, and DoD compliance across all systems</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-inner">
+          <div class="tl-header">
+            <span class="tl-role">Senior Developer &amp; Project Manager</span>
+            <span class="tl-date">Nov 2003 &ndash; Mar 2005</span>
+          </div>
+          <p class="tl-company">JMT Technology Group</p>
+          <p class="tl-location">Hunt Valley, MD</p>
+          <ul class="tl-highlights">
+            <li>Led $2M Pennsylvania Turnpike Commission software contract from design through delivery</li>
+            <li>Received Board of Directors Award for Outstanding Achievement</li>
+            <li>Defined departmental development standards around Microsoft .NET, SQL Server, and SSRS</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-inner">
+          <div class="tl-header">
+            <span class="tl-role">Senior IT Analyst</span>
+            <span class="tl-date">Nov 1998 &ndash; Nov 2003</span>
+          </div>
+          <p class="tl-company">Exelon</p>
+          <p class="tl-location">Baltimore / DC</p>
+          <ul class="tl-highlights">
+            <li>PM for application testing and deployment across Power Trading and Nuclear Generation divisions</li>
+            <li>Oversaw migration of 8,000+ workstations across the enterprise</li>
+            <li>Served as liaison between PMO and external consulting partners</li>
+            <li>Produced CIO-level due diligence reporting for technology initiatives</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-inner">
+          <div class="tl-header">
+            <span class="tl-role">Senior IT Analyst</span>
+            <span class="tl-date">Jan 1994 &ndash; Nov 1998</span>
+          </div>
+          <p class="tl-company">US Filter</p>
+          <p class="tl-location">Timonium, MD</p>
+          <ul class="tl-highlights">
+            <li>Designed and internationally deployed corporate sales force management software, reporting directly to CEO</li>
+            <li>Developed data analysis software interfacing with photo-spectrometer hardware for QA/QC and R&amp;D workflows</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </section>
 
   <!-- ── CONTACT ── -->
-  <div class="contact" id="contact">
-    <h2>Let&rsquo;s build something great</h2>
-    <p>Ready to find the right solution? Reach out to our team.</p>
-    <a class="contact-email" href="mailto:sales@dejatechsolutions.com">
-      &#9993;&ensp;sales@dejatechsolutions.com
+  <div id="contact">
+    <div class="contact-glow"></div>
+    <span class="section-eyebrow" style="display:block;padding-top:6rem;">Get In Touch</span>
+    <h2 class="contact-title">Let's Work Together</h2>
+    <p class="contact-sub">Whether it's a leadership role, consulting engagement, or an interesting project — I'd love to hear from it.</p>
+    <a class="contact-email-btn" href="mailto:brian@dejatechsolutions.com">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      brian@dejatechsolutions.com
     </a>
+    <div class="social-links" style="padding-bottom:6rem;">
+      <a class="social-link" href="https://github.com/BrianB-22" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </a>
+      <a class="social-link" href="https://www.linkedin.com/in/brian-bernacki/" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
   </div>
 
   <!-- ── FOOTER ── -->
+  <div class="sep"></div>
   <footer>
-    &copy; <script>document.write(new Date().getFullYear())</script> DejaTech Solutions, LLC &mdash; All rights reserved.
+    <span>&copy; 2026 Brian Bernacki &middot; DejaTech Solutions, LLC</span>
+    <div class="footer-links">
+      <a href="https://github.com/BrianB-22" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="https://www.linkedin.com/in/brian-bernacki/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
   </footer>
 
 </body>
