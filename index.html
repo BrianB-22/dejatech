@@ -745,6 +745,59 @@
     }
 
     /* ── COMING SOON CARD ── */
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .skills-group {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .skills-group::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 15%; right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.5;
+    }
+    .skills-group:hover { border-color: var(--border-hi); }
+    .skills-group-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+    .skills-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .skill-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--light);
+      background: var(--faint);
+      border: 1px solid rgba(232, 240, 254, 0.1);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-tag:hover {
+      border-color: rgba(0, 200, 255, 0.35);
+      color: var(--cyan);
+    }
+
     .coming-soon {
       background: var(--panel2);
       border: 1px dashed rgba(0,200,255,0.18);
@@ -1081,6 +1134,7 @@
     <a class="nav-brand" href="#">Brian <span>Bernacki</span></a>
     <ul>
       <li class="hide-sm"><a href="#projects">Projects</a></li>
+      <li class="hide-sm"><a href="#skills">Skills</a></li>
       <li class="hide-sm"><a href="#experience">Experience</a></li>
       <li><a class="nav-cta" href="#contact">Contact</a></li>
     </ul>
@@ -1205,6 +1259,90 @@
     <div class="coming-soon">
       <p class="coming-soon-label">On the workbench</p>
       <h3>More coming soon&hellip;</h3>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ── -->
+  <div class="sep"></div>
+  <section class="section" id="skills">
+    <div class="section-header">
+      <span class="section-eyebrow">Toolkit</span>
+      <h2 class="section-title">Skills &amp; Technologies</h2>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skills-group">
+        <h4 class="skills-group-title">Cloud &amp; Infrastructure</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Terraform</span>
+          <span class="skill-tag">VDI / WorkSpaces</span>
+          <span class="skill-tag">Hybrid Cloud</span>
+          <span class="skill-tag">Private Cloud</span>
+          <span class="skill-tag">Data Center Migrations</span>
+          <span class="skill-tag">Data Center Operations</span>
+        </div>
+      </div>
+
+      <div class="skills-group">
+        <h4 class="skills-group-title">Security</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">Zero Trust</span>
+          <span class="skill-tag">Endpoint Security</span>
+          <span class="skill-tag">Conditional Access</span>
+          <span class="skill-tag">PCI-DSS</span>
+          <span class="skill-tag">NIST CSF</span>
+          <span class="skill-tag">Email Security</span>
+        </div>
+      </div>
+
+      <div class="skills-group">
+        <h4 class="skills-group-title">Development &amp; Data</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Go</span>
+          <span class="skill-tag">C / C++</span>
+          <span class="skill-tag">Swift</span>
+          <span class="skill-tag">SwiftUI</span>
+          <span class="skill-tag">Microsoft .NET</span>
+          <span class="skill-tag">MSSQL</span>
+          <span class="skill-tag">MySQL</span>
+          <span class="skill-tag">PostgreSQL</span>
+        </div>
+      </div>
+
+      <div class="skills-group">
+        <h4 class="skills-group-title">AI &amp; Automation</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">LLM Integration</span>
+          <span class="skill-tag">Workflow Automation</span>
+          <span class="skill-tag">Enterprise AI</span>
+          <span class="skill-tag">Chatbot Development</span>
+        </div>
+      </div>
+
+      <div class="skills-group">
+        <h4 class="skills-group-title">Leadership &amp; Management</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">IT Strategy</span>
+          <span class="skill-tag">Team Building</span>
+          <span class="skill-tag">Vendor Management</span>
+          <span class="skill-tag">Budget Management</span>
+          <span class="skill-tag">PMO</span>
+          <span class="skill-tag">Compliance</span>
+        </div>
+      </div>
+
+      <div class="skills-group">
+        <h4 class="skills-group-title">Platforms &amp; Tools</h4>
+        <div class="skills-tags">
+          <span class="skill-tag">Office 365</span>
+          <span class="skill-tag">Supabase</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">Xcode</span>
+          <span class="skill-tag">Kiro</span>
+        </div>
+      </div>
     </div>
   </section>
 
