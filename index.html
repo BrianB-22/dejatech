@@ -514,6 +514,30 @@
       padding: 0.25rem 0.7rem;
     }
 
+    .project-features {
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+    .project-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      padding: 0.3rem 0;
+    }
+    .project-features li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+      margin-top: 0.45em;
+    }
+
     .project-actions {
       display: flex;
       gap: 0.75rem;
@@ -1167,17 +1191,16 @@
 
     <!-- SimLetsFly -->
     <div class="project-card">
-      <div class="project-info">
+      <div class="project-content">
         <span class="project-label">&#9679;&nbsp; Web App &mdash; Free</span>
-        <h2 class="project-name">SimLetsFly</h2>
-        <p class="project-desc">A flight simulator companion that breaks you out of flying the same routes. Set your parameters and let it pick a random departure and arrival — or hit Challenge Mode for a truly demanding approach. Generates real-world IFR routes and exports directly to X-Plane, MSFS 2020, and MSFS 2024.</p>
+        <h3 class="project-name">SimLetsFly</h3>
+        <p class="project-desc">A flight simulator companion that breaks you out of flying the same routes. Set your parameters and discover flights you'd never plan yourself — or hit Challenge Mode for a truly demanding approach.</p>
         <ul class="project-features">
           <li>Random flight generator with filters for region, distance, airport size, and runway type</li>
           <li>Challenge Mode — short runways, high elevation, no ILS, unpaved surfaces</li>
           <li>Live METAR &amp; TAF weather with plain-English decode</li>
-          <li>Real-world IFR routing via airway data, exported to your simulator</li>
-          <li>Logbook with ratings, pilot notes, flight stats, and a visited airports map</li>
-          <li>38,634 airports · Discord community</li>
+          <li>Real-world IFR routing exported to X-Plane, MSFS 2020 &amp; 2024</li>
+          <li>Logbook with ratings, pilot notes, stats, and a visited airports map</li>
         </ul>
         <div class="project-tags">
           <span class="tag">Web</span>
@@ -1186,32 +1209,44 @@
           <span class="tag">Aviation</span>
         </div>
         <div class="project-actions">
-          <a class="btn-primary" href="https://simletsfly.com" target="_blank" rel="noopener">Visit SimLetsFly</a>
+          <a class="btn-project" href="https://simletsfly.com" target="_blank" rel="noopener">Visit SimLetsFly &rarr;</a>
         </div>
       </div>
       <div class="project-visual">
-        <div class="mockup-window">
-          <div class="mockup-dots"><span></span><span></span><span></span></div>
-          <div class="mockup-title">SimLetsFly</div>
-          <div class="mockup-row active">
-            <span class="mockup-app">KJFK &rarr; EGLL</span>
-            <span class="mockup-keys"><span class="key-badge">3,459 nm</span></span>
+        <div class="mockup">
+          <div class="mockup-bar">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span class="mockup-label">SimLetsFly</span>
           </div>
-          <div class="mockup-row">
-            <span class="mockup-app">Challenge</span>
-            <span class="mockup-keys"><span class="key-badge" style="color:#ff4444;">&#9889; Short Runway</span></span>
+          <div class="mockup-app-row">
+            <div class="app-icon"></div>
+            <span>KJFK &rarr; EGLL &mdash; 3,459 nm</span>
           </div>
-          <div class="mockup-row">
-            <span class="mockup-app">IFR Route</span>
-            <span class="mockup-keys"><span class="key-badge">J152 &middot; BLISS</span></span>
+          <div class="shortcut-row">
+            <span class="sc-name">Challenge</span>
+            <div class="sc-keys">
+              <span class="key" style="color:#ff6b6b;">&#9889; Short Runway</span>
+            </div>
           </div>
-          <div class="mockup-row">
-            <span class="mockup-app">Export</span>
-            <span class="mockup-keys"><span class="key-badge">MSFS 2024</span></span>
+          <div class="shortcut-row">
+            <span class="sc-name">IFR Route</span>
+            <div class="sc-keys">
+              <span class="key">J152</span><span class="key">BLISS</span>
+            </div>
           </div>
-          <div class="mockup-row">
-            <span class="mockup-app">METAR</span>
-            <span class="mockup-keys"><span class="key-badge">Live</span></span>
+          <div class="shortcut-row">
+            <span class="sc-name">Export</span>
+            <div class="sc-keys">
+              <span class="key">MSFS 2024</span>
+            </div>
+          </div>
+          <div class="shortcut-row">
+            <span class="sc-name">Weather</span>
+            <div class="sc-keys">
+              <span class="key">METAR Live</span>
+            </div>
           </div>
           <div class="mockup-footer">
             <div class="status-dot"></div>
