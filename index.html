@@ -747,11 +747,14 @@
     /* ── COMING SOON CARD ── */
     /* ── SKILLS ── */
     .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 2rem;
+      justify-content: center;
     }
     .skills-group {
+      flex: 1 1 280px;
+      max-width: 380px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 14px;
