@@ -587,6 +587,22 @@
       transform: translateY(-1px);
     }
 
+    .project-visual-screenshot {
+      padding: 0;
+      overflow: hidden;
+    }
+    .project-screenshot {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      border-radius: 0 20px 20px 0;
+      opacity: 0.92;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover .project-screenshot { opacity: 1; }
+
     /* ── QUICKKEY MOCKUP ── */
     .project-visual {
       background: linear-gradient(135deg, rgba(0,200,255,0.03) 0%, rgba(139,92,246,0.07) 100%);
@@ -1212,47 +1228,8 @@
           <a class="btn-project" href="https://simletsfly.com" target="_blank" rel="noopener">Visit SimLetsFly &rarr;</a>
         </div>
       </div>
-      <div class="project-visual">
-        <div class="mockup">
-          <div class="mockup-bar">
-            <div class="dot dot-r"></div>
-            <div class="dot dot-y"></div>
-            <div class="dot dot-g"></div>
-            <span class="mockup-label">SimLetsFly</span>
-          </div>
-          <div class="mockup-app-row">
-            <div class="app-icon"></div>
-            <span>KJFK &rarr; EGLL &mdash; 3,459 nm</span>
-          </div>
-          <div class="shortcut-row">
-            <span class="sc-name">Challenge</span>
-            <div class="sc-keys">
-              <span class="key" style="color:#ff6b6b;">&#9889; Short Runway</span>
-            </div>
-          </div>
-          <div class="shortcut-row">
-            <span class="sc-name">IFR Route</span>
-            <div class="sc-keys">
-              <span class="key">J152</span><span class="key">BLISS</span>
-            </div>
-          </div>
-          <div class="shortcut-row">
-            <span class="sc-name">Export</span>
-            <div class="sc-keys">
-              <span class="key">MSFS 2024</span>
-            </div>
-          </div>
-          <div class="shortcut-row">
-            <span class="sc-name">Weather</span>
-            <div class="sc-keys">
-              <span class="key">METAR Live</span>
-            </div>
-          </div>
-          <div class="mockup-footer">
-            <div class="status-dot"></div>
-            Web &mdash; Free Account
-          </div>
-        </div>
+      <div class="project-visual project-visual-screenshot">
+        <img src="simletsfly-screenshot.png" alt="SimLetsFly map view showing a flight route with live weather radar" class="project-screenshot">
       </div>
     </div>
 
