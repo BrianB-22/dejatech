@@ -236,6 +236,11 @@
       box-shadow: 0 0 26px rgba(0, 200, 255, 0.35);
       transform: scale(1.08);
     }
+    .catch-zone.cooling {
+      border-color: rgba(122, 143, 168, 0.3);
+      opacity: 0.4;
+      transform: scale(0.94);
+    }
     .catch-zone span {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 0.6rem;
@@ -1824,17 +1829,45 @@
       const scoreVal  = document.getElementById('game-score-val');
       const timeVal   = document.getElementById('game-time-val');
       const ROUND_MS  = 60000;
-      let score = 0, roundActive = false, roundEndAt = 0;
+      let score = 0, roundActive = false, roundEndAt = 0, cooldownUntil = 0;
+      const COOLDOWN_MS = 3000;
       let goalX = 0, goalY = 0, goalR = 41;
       const popups = [];
 
       const sndIntro = new Audio('sounds/background_intro.m4a');
-      sndIntro.volume = 0.5; sndIntro.preload = 'none';
+      sndIntro.volume = 0.5; sndIntro.preload = 'auto';
       const sndGameOver = new Audio('sounds/gameover.m4a');
-      sndGameOver.volume = 0.6; sndGameOver.preload = 'none';
+      sndGameOver.volume = 0.6; sndGameOver.preload = 'auto';
+      const catchPool = Array.from({ length: 6 }, function () {
+        const a = new Audio('sounds/boid_safe.m4a');
+        a.volume = 0.55; a.preload = 'auto';
+        return a;
+      });
+      let catchPoolIdx = 0;
+      const allSounds = [sndIntro, sndGameOver].concat(catchPool);
+      let audioUnlocked = false;
+
+      function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        allSounds.forEach(function (a) {
+          const wasMuted = a.muted;
+          a.muted = true;
+          a.play().then(function () {
+            a.pause();
+            a.currentTime = 0;
+            a.muted = wasMuted;
+          }).catch(function () { a.muted = wasMuted; });
+        });
+      }
+      window.addEventListener('pointerdown', unlockAudio, { once: true });
+      window.addEventListener('keydown', unlockAudio, { once: true });
+
       function playCatchSound() {
-        const s = new Audio('sounds/boid_safe.m4a');
-        s.volume = 0.55;
+        const s = catchPool[catchPoolIdx];
+        catchPoolIdx = (catchPoolIdx + 1) % catchPool.length;
+        s.pause();
+        s.currentTime = 0;
         s.play().catch(function () {});
       }
       function playOneShot(audio) {
@@ -1929,6 +1962,7 @@
           p.bvy = Math.sin(driftAngle) * driftSpeed;
         }
         roundActive = false;
+        cooldownUntil = Date.now() + COOLDOWN_MS;
         sndIntro.pause();
         playOneShot(sndGameOver);
         updateHud();
@@ -1937,7 +1971,7 @@
       hero.addEventListener('mousemove', function (e) {
         const pos = pointerPos(e);
         mx = pos.x; my = pos.y;
-        zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
+        zoneEl.classList.toggle('hot', Date.now() >= cooldownUntil && Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
       });
       hero.addEventListener('mouseleave', function () {
         mx = null; my = null;
@@ -1947,7 +1981,7 @@
       hero.addEventListener('touchmove', function (e) {
         const pos = pointerPos(e);
         mx = pos.x; my = pos.y;
-        zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
+        zoneEl.classList.toggle('hot', Date.now() >= cooldownUntil && Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
       }, { passive: true });
       hero.addEventListener('touchend', function () {
         mx = null; my = null;
@@ -1957,6 +1991,8 @@
       window.addEventListener('resize', resize);
       function tick() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        zoneEl.classList.toggle('cooling', Date.now() < cooldownUntil);
 
         if (roundActive) {
           const remaining = Math.max(0, Math.ceil((roundEndAt - Date.now()) / 1000));
@@ -2011,7 +2047,7 @@
             if (p.y < -4) p.y = canvas.height + 4;
             if (p.y > canvas.height + 4) p.y = -4;
 
-            if (withinGoal(p)) catchOne(p);
+            if (withinGoal(p) && Date.now() >= cooldownUntil) catchOne(p);
           }
 
           ctx.beginPath();
