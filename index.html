@@ -1646,7 +1646,6 @@
           <ul class="tl-highlights">
             <li>Lead Technical Operations across cloud, infrastructure, cybersecurity, endpoints, and enterprise platforms, managing ~$7M in annual technology spend and a global onshore/offshore team</li>
             <li>Designed and deployed an AI service desk automation platform triaging ~700 tickets/month with 87% high-confidence automated assignment, saving 130+ technician hours per month (~$55K annualized)</li>
-            <li>Expanded the platform to 24/7 self-service, resolving 77% of login/password requests without a technician and cutting median response time from 3+ hours to 7 minutes</li>
             <li>Advanced Zero Trust with Microsoft Entra ID, Conditional Access, and Intune, migrating from traditional VPN to Microsoft Global Secure Access / ZTNA</li>
             <li>Led enterprise response and recovery for a significant cybersecurity incident, coordinating security partners, cyber insurance, legal counsel, and senior leadership</li>
             <li>Serve on the AI Champions Council and co-organized an AI Hackathon with AWS; lead AI platform cost governance across ChatGPT, Claude, Copilot, and Kiro, cutting monthly Claude spend from $20K+ to ~$4-5K</li>
@@ -1830,6 +1829,21 @@
       let goalX = 0, goalY = 0, goalR = 41;
       const popups = [];
 
+      const sndIntro = new Audio('sounds/background_intro.m4a');
+      sndIntro.volume = 0.5; sndIntro.preload = 'none';
+      const sndGameOver = new Audio('sounds/gameover.m4a');
+      sndGameOver.volume = 0.6; sndGameOver.preload = 'none';
+      function playCatchSound() {
+        const s = new Audio('sounds/boid_safe.m4a');
+        s.volume = 0.55;
+        s.play().catch(function () {});
+      }
+      function playOneShot(audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play().catch(function () {});
+      }
+
       function resize() {
         canvas.width  = hero.offsetWidth;
         canvas.height = hero.offsetHeight;
@@ -1905,7 +1919,9 @@
         if (!roundActive) {
           roundActive = true;
           roundEndAt = Date.now() + ROUND_MS;
+          playOneShot(sndIntro);
         }
+        playCatchSound();
         respawnBurst(p);
         updateHud();
       }
@@ -1924,6 +1940,8 @@
           p.bvy = Math.sin(driftAngle) * driftSpeed;
         }
         roundActive = false;
+        sndIntro.pause();
+        playOneShot(sndGameOver);
         updateHud();
       }
 
