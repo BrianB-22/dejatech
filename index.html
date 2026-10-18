@@ -1815,7 +1815,8 @@
       const canvas = document.getElementById('hero-canvas');
       const ctx    = canvas.getContext('2d');
       const hero   = canvas.closest('.hero');
-      const N = 55, RADIUS = 200, PULL = 0.055, GRAB_R = 24;
+      const N = 55, RADIUS = 200, PULL = 0.055, GRAB_R = 38;
+      let pointerDown = false;
       let mx = null, my = null;
 
       // ── catch-the-particles game state ──
@@ -1955,29 +1956,34 @@
         if (held) {
           dragTo(pos.x, pos.y);
           zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
+        } else if (pointerDown) {
+          startDrag(pos.x, pos.y);
         }
       });
       hero.addEventListener('mouseleave', function () { mx = null; my = null; });
       hero.addEventListener('mousedown', function (e) {
+        pointerDown = true;
         const pos = pointerPos(e);
         startDrag(pos.x, pos.y);
       });
-      window.addEventListener('mouseup', endDrag);
+      window.addEventListener('mouseup', function () { pointerDown = false; endDrag(); });
 
       hero.addEventListener('touchstart', function (e) {
+        pointerDown = true;
         const pos = pointerPos(e);
         startDrag(pos.x, pos.y);
         if (held) e.preventDefault();
       }, { passive: false });
       hero.addEventListener('touchmove', function (e) {
+        const pos = pointerPos(e);
+        if (!held && pointerDown) startDrag(pos.x, pos.y);
         if (held) {
-          const pos = pointerPos(e);
           dragTo(pos.x, pos.y);
           zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
           e.preventDefault();
         }
       }, { passive: false });
-      window.addEventListener('touchend', endDrag);
+      window.addEventListener('touchend', function () { pointerDown = false; endDrag(); });
 
       window.addEventListener('resize', resize);
 
@@ -2024,9 +2030,14 @@
           }
 
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.held ? p.r * 1.8 : p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(' + p.color + ',' + (p.held ? Math.min(1, p.a + 0.4) : p.a) + ')';
+          ctx.arc(p.x, p.y, p.held ? p.r * 2.2 : p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + p.color + ',' + (p.held ? 1 : p.a) + ')';
+          if (p.held) {
+            ctx.shadowColor = 'rgba(' + p.color + ',0.9)';
+            ctx.shadowBlur = 14;
+          }
           ctx.fill();
+          ctx.shadowBlur = 0;
         }
 
         for (var j = popups.length - 1; j >= 0; j--) {
