@@ -1814,8 +1814,7 @@
       const canvas = document.getElementById('hero-canvas');
       const ctx    = canvas.getContext('2d');
       const hero   = canvas.closest('.hero');
-      const N = 55, RADIUS = 200, PULL = 0.055, GRAB_R = 38;
-      let pointerDown = false;
+      const N = 55, RADIUS = 200, PULL = 0.055;
       let mx = null, my = null;
 
       // ── catch-the-particles game state ──
@@ -1825,7 +1824,7 @@
       const scoreVal  = document.getElementById('game-score-val');
       const timeVal   = document.getElementById('game-time-val');
       const ROUND_MS  = 60000;
-      let score = 0, roundActive = false, roundEndAt = 0, held = null;
+      let score = 0, roundActive = false, roundEndAt = 0;
       let goalX = 0, goalY = 0, goalR = 41;
       const popups = [];
 
@@ -1868,7 +1867,6 @@
           r:  Math.random() < 0.45 ? 1.5 : 2.5,
           color: cyan ? '0,200,255' : '139,92,246',
           a: 0.25 + Math.random() * 0.45,
-          held: false,
           caught: false
         };
       }
@@ -1880,16 +1878,6 @@
         const rect = canvas.getBoundingClientRect();
         const src  = e.touches && e.touches.length ? e.touches[0] : e;
         return { x: src.clientX - rect.left, y: src.clientY - rect.top };
-      }
-
-      function nearestParticle(x, y) {
-        let best = null, bestD = GRAB_R;
-        for (var i = 0; i < pts.length; i++) {
-          var p = pts[i];
-          var d = Math.hypot(p.x - x, p.y - y);
-          if (d < bestD) { best = p; bestD = d; }
-        }
-        return best;
       }
 
       function updateHud() {
@@ -1906,8 +1894,7 @@
         return Math.hypot(p.x - goalX, p.y - goalY) <= goalR;
       }
 
-      function catchHeld() {
-        const p = held;
+      function catchOne(p) {
         score++;
         if (!roundActive) {
           roundActive = true;
@@ -1916,7 +1903,6 @@
         }
         playCatchSound();
         addPopup(goalX, goalY, '+1');
-        p.held = false;
         p.caught = true;
         const ang = Math.random() * Math.PI * 2;
         const rad = Math.random() * goalR * 0.55;
@@ -1924,14 +1910,7 @@
         p.y = goalY + Math.sin(ang) * rad;
         p.vx = (Math.random() - 0.5) * 0.4;
         p.vy = (Math.random() - 0.5) * 0.4;
-        held = null;
-        zoneEl.classList.remove('hot');
         updateHud();
-      }
-
-      function maybeCatch() {
-        if (held && withinGoal(held)) { catchHeld(); return true; }
-        return false;
       }
 
       function explodeAll() {
@@ -1955,62 +1934,27 @@
         updateHud();
       }
 
-      function startDrag(x, y) {
-        const p = nearestParticle(x, y);
-        if (p) { p.held = true; held = p; maybeCatch(); }
-      }
-      function dragTo(x, y) {
-        if (held) {
-          held.x = Math.max(0, Math.min(canvas.width, x));
-          held.y = Math.max(0, Math.min(canvas.height, y));
-          maybeCatch();
-        }
-      }
-      function endDrag() {
-        if (!held) return;
-        held.vx = held.bvx; held.vy = held.bvy;
-        held.held = false;
-        held = null;
-        zoneEl.classList.remove('hot');
-      }
-
       hero.addEventListener('mousemove', function (e) {
         const pos = pointerPos(e);
         mx = pos.x; my = pos.y;
-        if (held) {
-          dragTo(pos.x, pos.y);
-          zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
-        } else if (pointerDown) {
-          startDrag(pos.x, pos.y);
-        }
+        zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
       });
-      hero.addEventListener('mouseleave', function () { mx = null; my = null; });
-      hero.addEventListener('mousedown', function (e) {
-        pointerDown = true;
-        const pos = pointerPos(e);
-        startDrag(pos.x, pos.y);
+      hero.addEventListener('mouseleave', function () {
+        mx = null; my = null;
+        zoneEl.classList.remove('hot');
       });
-      window.addEventListener('mouseup', function () { pointerDown = false; endDrag(); });
 
-      hero.addEventListener('touchstart', function (e) {
-        pointerDown = true;
-        const pos = pointerPos(e);
-        startDrag(pos.x, pos.y);
-        if (held) e.preventDefault();
-      }, { passive: false });
       hero.addEventListener('touchmove', function (e) {
         const pos = pointerPos(e);
-        if (!held && pointerDown) startDrag(pos.x, pos.y);
-        if (held) {
-          dragTo(pos.x, pos.y);
-          zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
-          e.preventDefault();
-        }
-      }, { passive: false });
-      window.addEventListener('touchend', function () { pointerDown = false; endDrag(); });
+        mx = pos.x; my = pos.y;
+        zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
+      }, { passive: true });
+      hero.addEventListener('touchend', function () {
+        mx = null; my = null;
+        zoneEl.classList.remove('hot');
+      });
 
       window.addEventListener('resize', resize);
-
       function tick() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -2038,7 +1982,7 @@
               p.vx *= -0.4;
               p.vy *= -0.4;
             }
-          } else if (!p.held) {
+          } else {
             // mouse attraction
             if (mx !== null) {
               var dx = mx - p.x, dy = my - p.y;
@@ -2066,14 +2010,16 @@
             if (p.x > canvas.width  + 4) p.x = -4;
             if (p.y < -4) p.y = canvas.height + 4;
             if (p.y > canvas.height + 4) p.y = -4;
+
+            if (withinGoal(p)) catchOne(p);
           }
 
           ctx.beginPath();
-          ctx.arc(p.x, p.y, (p.held || p.caught) ? p.r * 1.9 : p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(' + p.color + ',' + ((p.held || p.caught) ? 1 : p.a) + ')';
-          if (p.held || p.caught) {
+          ctx.arc(p.x, p.y, p.caught ? p.r * 1.9 : p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + p.color + ',' + (p.caught ? 1 : p.a) + ')';
+          if (p.caught) {
             ctx.shadowColor = 'rgba(' + p.color + ',0.9)';
-            ctx.shadowBlur = p.held ? 14 : 8;
+            ctx.shadowBlur = 8;
           }
           ctx.fill();
           ctx.shadowBlur = 0;
