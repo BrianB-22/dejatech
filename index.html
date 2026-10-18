@@ -215,6 +215,61 @@
       pointer-events: none;
     }
 
+    /* particle catch game */
+    .catch-zone {
+      position: absolute;
+      bottom: 92px;
+      right: 28px;
+      width: 82px;
+      height: 82px;
+      border: 2px dashed rgba(0, 200, 255, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .catch-zone.hot {
+      border-color: rgba(0, 200, 255, 0.9);
+      box-shadow: 0 0 26px rgba(0, 200, 255, 0.35);
+      transform: scale(1.08);
+    }
+    .catch-zone span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.75;
+    }
+    .game-hud {
+      position: absolute;
+      top: 96px;
+      right: 28px;
+      z-index: 3;
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: rgba(12, 21, 36, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.4rem 1rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    .game-hud.visible { opacity: 1; transform: translateY(0); }
+    .game-hud strong { color: var(--cyan); font-weight: 600; }
+    .game-hud .game-timer strong { color: var(--purple); }
+
     .p1  { width:3px; height:3px; background:var(--cyan);   opacity:.5; bottom:18%; left:15%; animation-duration:9s;  animation-delay:0s; }
     .p2  { width:2px; height:2px; background:var(--purple); opacity:.4; bottom:28%; left:72%; animation-duration:11s; animation-delay:2s; }
     .p3  { width:3px; height:3px; background:var(--cyan);   opacity:.35; bottom:50%; left:8%;  animation-duration:13s; animation-delay:4s; }
@@ -1140,6 +1195,9 @@
       .timeline-dot { width: 20px; height: 20px; }
       .timeline-inner { padding: 1.25rem 1.25rem; }
       footer { flex-direction: column; align-items: center; }
+      .catch-zone { width: 58px; height: 58px; bottom: 70px; right: 14px; }
+      .catch-zone span { font-size: 0.5rem; }
+      .game-hud { top: 74px; right: 14px; font-size: 0.68rem; padding: 0.32rem 0.75rem; gap: 0.5rem; }
     }
 
     @media (max-width: 480px) {
@@ -1169,6 +1227,13 @@
 
     <!-- interactive particle canvas -->
     <canvas id="hero-canvas"></canvas>
+
+    <!-- particle catch game -->
+    <div class="catch-zone" id="catch-zone"><span>Catch</span></div>
+    <div class="game-hud" id="game-hud">
+      <span class="game-score">Score: <strong id="game-score-val">0</strong></span>
+      <span class="game-timer" id="game-timer" style="display:none;">&#9201; <strong id="game-time-val">60</strong>s</span>
+    </div>
 
     <!-- decorative circuit SVGs -->
     <svg class="hero-circuit-r" viewBox="0 0 170 170" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1750,12 +1815,28 @@
       const canvas = document.getElementById('hero-canvas');
       const ctx    = canvas.getContext('2d');
       const hero   = canvas.closest('.hero');
-      const N = 55, RADIUS = 200, PULL = 0.055;
+      const N = 55, RADIUS = 200, PULL = 0.055, GRAB_R = 24;
       let mx = null, my = null;
+
+      // ── catch-the-particles game state ──
+      const zoneEl   = document.getElementById('catch-zone');
+      const hudEl     = document.getElementById('game-hud');
+      const timerEl   = document.getElementById('game-timer');
+      const scoreVal  = document.getElementById('game-score-val');
+      const timeVal   = document.getElementById('game-time-val');
+      const ROUND_MS  = 60000;
+      let score = 0, roundActive = false, roundEndAt = 0, held = null;
+      let goalX = 0, goalY = 0, goalR = 41;
+      const popups = [];
 
       function resize() {
         canvas.width  = hero.offsetWidth;
         canvas.height = hero.offsetHeight;
+        const zr = zoneEl.getBoundingClientRect();
+        const hr = hero.getBoundingClientRect();
+        goalX = zr.left - hr.left + zr.width / 2;
+        goalY = zr.top  - hr.top  + zr.height / 2;
+        goalR = zr.width / 2;
       }
 
       function makeParticle() {
@@ -1771,59 +1852,192 @@
           bvy: Math.sin(angle) * speed,
           r:  Math.random() < 0.45 ? 1.5 : 2.5,
           color: cyan ? '0,200,255' : '139,92,246',
-          a: 0.25 + Math.random() * 0.45
+          a: 0.25 + Math.random() * 0.45,
+          held: false
         };
       }
 
       resize();
       const pts = Array.from({ length: N }, makeParticle);
 
-      hero.addEventListener('mousemove', function (e) {
+      function pointerPos(e) {
         const rect = canvas.getBoundingClientRect();
-        mx = e.clientX - rect.left;
-        my = e.clientY - rect.top;
+        const src  = e.touches && e.touches.length ? e.touches[0] : e;
+        return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+      }
+
+      function nearestParticle(x, y) {
+        let best = null, bestD = GRAB_R;
+        for (var i = 0; i < pts.length; i++) {
+          var p = pts[i];
+          var d = Math.hypot(p.x - x, p.y - y);
+          if (d < bestD) { best = p; bestD = d; }
+        }
+        return best;
+      }
+
+      function updateHud() {
+        scoreVal.textContent = score;
+        hudEl.classList.toggle('visible', score > 0 || roundActive);
+        timerEl.style.display = roundActive ? '' : 'none';
+      }
+
+      function addPopup(x, y, text) {
+        popups.push({ x: x, y: y, text: text, life: 1 });
+      }
+
+      function respawnBurst(p) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2.5 + Math.random() * 2.5;
+        p.x = goalX; p.y = goalY;
+        p.vx = Math.cos(angle) * speed;
+        p.vy = Math.sin(angle) * speed;
+        const driftAngle = Math.random() * Math.PI * 2;
+        const driftSpeed = 0.15 + Math.random() * 0.35;
+        p.bvx = Math.cos(driftAngle) * driftSpeed;
+        p.bvy = Math.sin(driftAngle) * driftSpeed;
+      }
+
+      function catchParticle(p) {
+        score++;
+        addPopup(goalX, goalY, '+1');
+        if (!roundActive) {
+          roundActive = true;
+          roundEndAt = Date.now() + ROUND_MS;
+        }
+        respawnBurst(p);
+        updateHud();
+      }
+
+      function explodeAll() {
+        for (var i = 0; i < pts.length; i++) {
+          var p = pts[i];
+          var dx = p.x - goalX, dy = p.y - goalY;
+          var d  = Math.hypot(dx, dy) || 1;
+          var speed = 3 + Math.random() * 3;
+          p.vx = (dx / d) * speed + (Math.random() - 0.5);
+          p.vy = (dy / d) * speed + (Math.random() - 0.5);
+          const driftAngle = Math.random() * Math.PI * 2;
+          const driftSpeed = 0.15 + Math.random() * 0.35;
+          p.bvx = Math.cos(driftAngle) * driftSpeed;
+          p.bvy = Math.sin(driftAngle) * driftSpeed;
+        }
+        roundActive = false;
+        updateHud();
+      }
+
+      function startDrag(x, y) {
+        const p = nearestParticle(x, y);
+        if (p) { p.held = true; held = p; }
+      }
+      function dragTo(x, y) {
+        if (held) {
+          held.x = Math.max(0, Math.min(canvas.width, x));
+          held.y = Math.max(0, Math.min(canvas.height, y));
+        }
+      }
+      function endDrag() {
+        if (!held) return;
+        const d = Math.hypot(held.x - goalX, held.y - goalY);
+        zoneEl.classList.remove('hot');
+        if (d <= goalR) {
+          catchParticle(held);
+        } else {
+          held.vx = held.bvx; held.vy = held.bvy;
+        }
+        held.held = false;
+        held = null;
+      }
+
+      hero.addEventListener('mousemove', function (e) {
+        const pos = pointerPos(e);
+        mx = pos.x; my = pos.y;
+        if (held) {
+          dragTo(pos.x, pos.y);
+          zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
+        }
       });
       hero.addEventListener('mouseleave', function () { mx = null; my = null; });
+      hero.addEventListener('mousedown', function (e) {
+        const pos = pointerPos(e);
+        startDrag(pos.x, pos.y);
+      });
+      window.addEventListener('mouseup', endDrag);
+
+      hero.addEventListener('touchstart', function (e) {
+        const pos = pointerPos(e);
+        startDrag(pos.x, pos.y);
+        if (held) e.preventDefault();
+      }, { passive: false });
+      hero.addEventListener('touchmove', function (e) {
+        if (held) {
+          const pos = pointerPos(e);
+          dragTo(pos.x, pos.y);
+          zoneEl.classList.toggle('hot', Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR);
+          e.preventDefault();
+        }
+      }, { passive: false });
+      window.addEventListener('touchend', endDrag);
+
       window.addEventListener('resize', resize);
 
       function tick() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        if (roundActive) {
+          const remaining = Math.max(0, Math.ceil((roundEndAt - Date.now()) / 1000));
+          timeVal.textContent = remaining;
+          if (Date.now() >= roundEndAt) explodeAll();
+        }
+
         for (var i = 0; i < pts.length; i++) {
           var p = pts[i];
 
-          // mouse attraction
-          if (mx !== null) {
-            var dx = mx - p.x, dy = my - p.y;
-            var d  = Math.sqrt(dx * dx + dy * dy);
-            if (d < RADIUS && d > 0) {
-              var f = (1 - d / RADIUS) * PULL;
-              p.vx += (dx / d) * f;
-              p.vy += (dy / d) * f;
+          if (!p.held) {
+            // mouse attraction
+            if (mx !== null) {
+              var dx = mx - p.x, dy = my - p.y;
+              var d  = Math.sqrt(dx * dx + dy * dy);
+              if (d < RADIUS && d > 0) {
+                var f = (1 - d / RADIUS) * PULL;
+                p.vx += (dx / d) * f;
+                p.vy += (dy / d) * f;
+              }
             }
+
+            // drift back to base velocity when mouse away
+            p.vx += (p.bvx - p.vx) * 0.012;
+            p.vy += (p.bvy - p.vy) * 0.012;
+
+            // damping
+            p.vx *= 0.97;
+            p.vy *= 0.97;
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // wrap edges
+            if (p.x < -4) p.x = canvas.width  + 4;
+            if (p.x > canvas.width  + 4) p.x = -4;
+            if (p.y < -4) p.y = canvas.height + 4;
+            if (p.y > canvas.height + 4) p.y = -4;
           }
 
-          // drift back to base velocity when mouse away
-          p.vx += (p.bvx - p.vx) * 0.012;
-          p.vy += (p.bvy - p.vy) * 0.012;
-
-          // damping
-          p.vx *= 0.97;
-          p.vy *= 0.97;
-
-          p.x += p.vx;
-          p.y += p.vy;
-
-          // wrap edges
-          if (p.x < -4) p.x = canvas.width  + 4;
-          if (p.x > canvas.width  + 4) p.x = -4;
-          if (p.y < -4) p.y = canvas.height + 4;
-          if (p.y > canvas.height + 4) p.y = -4;
-
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(' + p.color + ',' + p.a + ')';
+          ctx.arc(p.x, p.y, p.held ? p.r * 1.8 : p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + p.color + ',' + (p.held ? Math.min(1, p.a + 0.4) : p.a) + ')';
           ctx.fill();
+        }
+
+        for (var j = popups.length - 1; j >= 0; j--) {
+          var pop = popups[j];
+          pop.life -= 0.02;
+          pop.y -= 0.6;
+          if (pop.life <= 0) { popups.splice(j, 1); continue; }
+          ctx.font = '600 13px "Space Grotesk", sans-serif';
+          ctx.fillStyle = 'rgba(0,200,255,' + pop.life + ')';
+          ctx.textAlign = 'center';
+          ctx.fillText(pop.text, pop.x, pop.y);
         }
 
         requestAnimationFrame(tick);
