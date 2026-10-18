@@ -1868,7 +1868,8 @@
           r:  Math.random() < 0.45 ? 1.5 : 2.5,
           color: cyan ? '0,200,255' : '139,92,246',
           a: 0.25 + Math.random() * 0.45,
-          held: false
+          held: false,
+          caught: false
         };
       }
 
@@ -1901,39 +1902,48 @@
         popups.push({ x: x, y: y, text: text, life: 1 });
       }
 
-      function respawnBurst(p) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2.5 + Math.random() * 2.5;
-        p.x = goalX; p.y = goalY;
-        p.vx = Math.cos(angle) * speed;
-        p.vy = Math.sin(angle) * speed;
-        const driftAngle = Math.random() * Math.PI * 2;
-        const driftSpeed = 0.15 + Math.random() * 0.35;
-        p.bvx = Math.cos(driftAngle) * driftSpeed;
-        p.bvy = Math.sin(driftAngle) * driftSpeed;
+      function withinGoal(p) {
+        return Math.hypot(p.x - goalX, p.y - goalY) <= goalR;
       }
 
-      function catchParticle(p) {
+      function catchHeld() {
+        const p = held;
         score++;
-        addPopup(goalX, goalY, '+1');
         if (!roundActive) {
           roundActive = true;
           roundEndAt = Date.now() + ROUND_MS;
           playOneShot(sndIntro);
         }
         playCatchSound();
-        respawnBurst(p);
+        addPopup(goalX, goalY, '+1');
+        p.held = false;
+        p.caught = true;
+        const ang = Math.random() * Math.PI * 2;
+        const rad = Math.random() * goalR * 0.55;
+        p.x = goalX + Math.cos(ang) * rad;
+        p.y = goalY + Math.sin(ang) * rad;
+        p.vx = (Math.random() - 0.5) * 0.4;
+        p.vy = (Math.random() - 0.5) * 0.4;
+        held = null;
+        zoneEl.classList.remove('hot');
         updateHud();
+      }
+
+      function maybeCatch() {
+        if (held && withinGoal(held)) { catchHeld(); return true; }
+        return false;
       }
 
       function explodeAll() {
         for (var i = 0; i < pts.length; i++) {
           var p = pts[i];
           var dx = p.x - goalX, dy = p.y - goalY;
-          var d  = Math.hypot(dx, dy) || 1;
-          var speed = 3 + Math.random() * 3;
-          p.vx = (dx / d) * speed + (Math.random() - 0.5);
-          p.vy = (dy / d) * speed + (Math.random() - 0.5);
+          var d  = Math.hypot(dx, dy);
+          var angle = d > 2 ? Math.atan2(dy, dx) : Math.random() * Math.PI * 2;
+          var speed = 4 + Math.random() * 5;
+          p.vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 2;
+          p.vy = Math.sin(angle) * speed + (Math.random() - 0.5) * 2;
+          p.caught = false;
           const driftAngle = Math.random() * Math.PI * 2;
           const driftSpeed = 0.15 + Math.random() * 0.35;
           p.bvx = Math.cos(driftAngle) * driftSpeed;
@@ -1947,25 +1957,21 @@
 
       function startDrag(x, y) {
         const p = nearestParticle(x, y);
-        if (p) { p.held = true; held = p; }
+        if (p) { p.held = true; held = p; maybeCatch(); }
       }
       function dragTo(x, y) {
         if (held) {
           held.x = Math.max(0, Math.min(canvas.width, x));
           held.y = Math.max(0, Math.min(canvas.height, y));
+          maybeCatch();
         }
       }
       function endDrag() {
         if (!held) return;
-        const d = Math.hypot(held.x - goalX, held.y - goalY);
-        zoneEl.classList.remove('hot');
-        if (d <= goalR) {
-          catchParticle(held);
-        } else {
-          held.vx = held.bvx; held.vy = held.bvy;
-        }
+        held.vx = held.bvx; held.vy = held.bvy;
         held.held = false;
         held = null;
+        zoneEl.classList.remove('hot');
       }
 
       hero.addEventListener('mousemove', function (e) {
@@ -2017,7 +2023,22 @@
         for (var i = 0; i < pts.length; i++) {
           var p = pts[i];
 
-          if (!p.held) {
+          if (p.caught) {
+            // gently drift in place, contained inside the catch zone
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.96;
+            p.vy *= 0.96;
+            var cdx = p.x - goalX, cdy = p.y - goalY;
+            var cd  = Math.hypot(cdx, cdy);
+            var maxR = goalR * 0.75;
+            if (cd > maxR && cd > 0) {
+              p.x = goalX + (cdx / cd) * maxR;
+              p.y = goalY + (cdy / cd) * maxR;
+              p.vx *= -0.4;
+              p.vy *= -0.4;
+            }
+          } else if (!p.held) {
             // mouse attraction
             if (mx !== null) {
               var dx = mx - p.x, dy = my - p.y;
@@ -2048,11 +2069,11 @@
           }
 
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.held ? p.r * 2.2 : p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(' + p.color + ',' + (p.held ? 1 : p.a) + ')';
-          if (p.held) {
+          ctx.arc(p.x, p.y, (p.held || p.caught) ? p.r * 1.9 : p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + p.color + ',' + ((p.held || p.caught) ? 1 : p.a) + ')';
+          if (p.held || p.caught) {
             ctx.shadowColor = 'rgba(' + p.color + ',0.9)';
-            ctx.shadowBlur = 14;
+            ctx.shadowBlur = p.held ? 14 : 8;
           }
           ctx.fill();
           ctx.shadowBlur = 0;
