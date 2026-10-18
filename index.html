@@ -218,19 +218,21 @@
     /* particle catch game */
     .catch-zone {
       position: absolute;
-      bottom: 92px;
+      top: 148px;
       right: 28px;
       width: 82px;
       height: 82px;
       border: 2px dashed rgba(0, 200, 255, 0.4);
       border-radius: 50%;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2;
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
+    .catch-zone.playing { cursor: default; }
     .catch-zone.hot {
       border-color: rgba(0, 200, 255, 0.9);
       box-shadow: 0 0 26px rgba(0, 200, 255, 0.35);
@@ -243,11 +245,15 @@
     }
     .catch-zone span {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
+      font-size: 0.56rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--muted);
-      opacity: 0.75;
+      opacity: 0.8;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 60px;
+      pointer-events: none;
     }
     .game-hud {
       position: absolute;
@@ -1200,7 +1206,7 @@
       .timeline-dot { width: 20px; height: 20px; }
       .timeline-inner { padding: 1.25rem 1.25rem; }
       footer { flex-direction: column; align-items: center; }
-      .catch-zone { width: 58px; height: 58px; bottom: 70px; right: 14px; }
+      .catch-zone { width: 56px; height: 56px; top: 112px; right: 14px; }
       .catch-zone span { font-size: 0.5rem; }
       .game-hud { top: 74px; right: 14px; font-size: 0.68rem; padding: 0.32rem 0.75rem; gap: 0.5rem; }
     }
@@ -1234,7 +1240,7 @@
     <canvas id="hero-canvas"></canvas>
 
     <!-- particle catch game -->
-    <div class="catch-zone" id="catch-zone"><span>Catch</span></div>
+    <div class="catch-zone" id="catch-zone"><span id="catch-zone-label">Click To Play</span></div>
     <div class="game-hud" id="game-hud">
       <span class="game-score">Score: <strong id="game-score-val">0</strong></span>
       <span class="game-timer" id="game-timer" style="display:none;">&#9201; <strong id="game-time-val">60</strong>s</span>
@@ -1824,6 +1830,7 @@
 
       // ── catch-the-particles game state ──
       const zoneEl   = document.getElementById('catch-zone');
+      const labelEl   = document.getElementById('catch-zone-label');
       const hudEl     = document.getElementById('game-hud');
       const timerEl   = document.getElementById('game-timer');
       const scoreVal  = document.getElementById('game-score-val');
@@ -1927,13 +1934,19 @@
         return Math.hypot(p.x - goalX, p.y - goalY) <= goalR;
       }
 
+      function startRound() {
+        if (roundActive || Date.now() < cooldownUntil) return;
+        unlockAudio();
+        roundActive = true;
+        roundEndAt = Date.now() + ROUND_MS;
+        playOneShot(sndIntro);
+        labelEl.textContent = 'Goal Circle';
+        zoneEl.classList.add('playing');
+        updateHud();
+      }
+
       function catchOne(p) {
         score++;
-        if (!roundActive) {
-          roundActive = true;
-          roundEndAt = Date.now() + ROUND_MS;
-          playOneShot(sndIntro);
-        }
         playCatchSound();
         addPopup(goalX, goalY, '+1');
         p.caught = true;
@@ -1963,10 +1976,14 @@
         }
         roundActive = false;
         cooldownUntil = Date.now() + COOLDOWN_MS;
+        labelEl.textContent = 'Click To Play';
+        zoneEl.classList.remove('playing');
         sndIntro.pause();
         playOneShot(sndGameOver);
         updateHud();
       }
+
+      zoneEl.addEventListener('click', startRound);
 
       hero.addEventListener('mousemove', function (e) {
         const pos = pointerPos(e);
@@ -2047,7 +2064,7 @@
             if (p.y < -4) p.y = canvas.height + 4;
             if (p.y > canvas.height + 4) p.y = -4;
 
-            if (withinGoal(p) && Date.now() >= cooldownUntil) catchOne(p);
+            if (roundActive && withinGoal(p)) catchOne(p);
           }
 
           ctx.beginPath();
