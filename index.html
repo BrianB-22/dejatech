@@ -1943,6 +1943,7 @@
         playOneShot(sndIntro);
         labelEl.textContent = 'Goal Circle';
         zoneEl.classList.add('playing');
+        hero.style.touchAction = 'none';
         updateHud();
       }
 
@@ -1979,6 +1980,7 @@
         cooldownUntil = Date.now() + COOLDOWN_MS;
         labelEl.textContent = 'Click To Play';
         zoneEl.classList.remove('playing');
+        hero.style.touchAction = '';
         sndIntro.pause();
         playOneShot(sndGameOver);
         updateHud();
@@ -2000,7 +2002,8 @@
         const pos = pointerPos(e);
         mx = pos.x; my = pos.y;
         zoneEl.classList.toggle('hot', Date.now() >= cooldownUntil && Math.hypot(pos.x - goalX, pos.y - goalY) <= goalR * 1.6);
-      }, { passive: true });
+        if (roundActive) e.preventDefault();
+      }, { passive: false });
       hero.addEventListener('touchend', function () {
         mx = null; my = null;
         zoneEl.classList.remove('hot');
