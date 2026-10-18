@@ -1937,6 +1937,7 @@
       function startRound() {
         if (roundActive || Date.now() < cooldownUntil) return;
         unlockAudio();
+        score = 0;
         roundActive = true;
         roundEndAt = Date.now() + ROUND_MS;
         playOneShot(sndIntro);
